@@ -1,3 +1,4 @@
+#[derive(Default)]
 struct Hand {
     red: usize,
     green: usize,
@@ -6,13 +7,8 @@ struct Hand {
 
 impl Hand {
     pub fn from_str(hand_str: &str) -> Self {
-        let mut hand = Hand {
-            red: 0,
-            green: 0,
-            blue: 0,
-        };
-        hand_str.split(',').for_each(|color| {
-            let color = color.trim();
+        hand_str.split(',').fold(Default::default(), |acc, color| {
+            let color = color.trim_start();
 
             match color.split_once(' ').map(|(num, color)| {
                 (
@@ -20,15 +16,13 @@ impl Hand {
                     color,
                 )
             }) {
-                Some((num, "red")) => hand.red = num,
-                Some((num, "green")) => hand.green = num,
-                Some((num, "blue")) => hand.blue = num,
+                Some((num, "red")) => Hand { red: num, ..acc },
+                Some((num, "green")) => Hand { green: num, ..acc },
+                Some((num, "blue")) => Hand { blue: num, ..acc },
                 Some((_, color)) => panic!("Color {color} is not valid"),
-                None => {}
+                None => acc,
             }
-        });
-
-        hand
+        })
     }
 
     pub fn power(&self) -> usize {
@@ -37,23 +31,16 @@ impl Hand {
 }
 
 struct Game {
-    id: usize,
     hands: Vec<Hand>,
 }
 
 impl Game {
-    pub fn new(id: usize, hands: Vec<Hand>) -> Self {
-        Game { id, hands }
-    }
-
     pub fn from_str(game_string: &str) -> Option<Self> {
-        let rest = game_string.strip_prefix("Game ")?;
-        let (id, rest) = rest.split_once(':')?;
-        let id = id.parse::<usize>().ok()?;
+        let (_, rest) = game_string.split_once(':')?;
 
         let hands: Vec<Hand> = rest.split(';').map(Hand::from_str).collect();
 
-        Some(Game { id, hands })
+        Some(Game { hands })
     }
 
     fn power(&self) -> usize {
@@ -61,13 +48,7 @@ impl Game {
     }
 
     fn get_min_possible_hand(&self) -> Hand {
-        const STARTING_HAND: Hand = Hand {
-            red: 0,
-            green: 0,
-            blue: 0,
-        };
-
-        let min_possible_hand = self.hands.iter().fold(STARTING_HAND, |acc, hand| {
+        let min_possible_hand = self.hands.iter().fold(Hand::default(), |acc, hand| {
             let red = if hand.red > acc.red {
                 hand.red
             } else {
@@ -95,13 +76,7 @@ pub fn process(input: &str) -> String {
     let sum: usize = input
         .lines()
         .map(Game::from_str)
-        .filter_map(|game| {
-            if let Some(game) = game {
-                Some(game.power())
-            } else {
-                None
-            }
-        })
+        .filter_map(|game| game.map(|game| game.power()))
         .sum();
 
     sum.to_string()

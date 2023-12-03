@@ -38,10 +38,6 @@ struct Game {
 }
 
 impl Game {
-    pub fn new(id: usize, hands: Vec<Hand>) -> Self {
-        Game { id, hands }
-    }
-
     pub fn from_str(game_string: &str) -> Option<Self> {
         let rest = game_string.strip_prefix("Game ")?;
         let (id, rest) = rest.split_once(':')?;
