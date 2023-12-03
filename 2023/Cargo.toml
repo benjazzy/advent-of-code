@@ -3,3 +3,4 @@ resolver = "2"
 members = ["day-*"]
 
 [workspace.dependencies]
+divan = "0.1.4"
