@@ -3,6 +3,7 @@ const NUMBERS: [&str; 10] = [
 ];
 
 pub fn process(input: &str) -> String {
+    assert!(input.is_ascii(), "Input needs to be valid ascii");
     let result: usize = input
         .lines()
         .map(|l| get_digits(l).unwrap_or_default())
@@ -35,9 +36,7 @@ fn get_word(input: &str, pos: usize, word_size: usize) -> usize {
 }
 
 fn get_digits(input: &str) -> Option<usize> {
-    assert!(input.is_ascii(), "Input needs to be ascii");
-
-    let first_digit_pos = input.chars().position(|c| c.is_digit(10));
+    let first_digit_pos = input.chars().position(|c| c.is_ascii_digit());
     let mut first_word_pos = None;
     let mut first_word_size = 0;
     for num in NUMBERS {
@@ -94,8 +93,6 @@ fn get_digits(input: &str) -> Option<usize> {
         (None, Some(w)) => get_word(input, w, last_word_size),
         _ => panic!("Something went wrong in last"),
     };
-
-    println!("input: {input}\tfirst: {first}\tsecond: {last}");
 
     Some(
         format!("{first}{last}")
