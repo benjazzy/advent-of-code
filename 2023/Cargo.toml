@@ -4,3 +4,4 @@ members = ["day-*"]
 
 [workspace.dependencies]
 divan = "0.1.4"
+itertools = "0.2.2"
