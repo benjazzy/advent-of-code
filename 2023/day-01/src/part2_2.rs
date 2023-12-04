@@ -93,8 +93,6 @@ fn get_digits(input: &str) -> Option<usize> {
         _ => panic!("Something went wrong in last"),
     };
 
-    println!("input: {input}\tfirst: {first}\tsecond: {last}");
-
     Some(
         format!("{first}{last}")
             .parse::<usize>()
