@@ -49,11 +49,12 @@ fn parse_numbers(input: &str) -> HashMap<Position, Number> {
             .chars()
             .enumerate()
             .group_by(|(_, c)| c.is_ascii_digit())
+            .into_iter()
             .filter_map(|(key, digit)| if key { Some(digit) } else { None })
-            .map(|digits| {
-                let col = digits.get(0).expect("Digit should not be empty").0;
+            .map(|mut digits| {
+                let col = digits.nth(0).expect("Digit should not be empty").0;
 
-                let number = digits.iter().fold(Number::default(), |acc, digit| {
+                let number = digits.fold(Number::default(), |acc, digit| {
                     let value = digit.1.to_digit(10).expect("Char should be digit");
                     Number {
                         value: acc.value * 10 + value as usize,
