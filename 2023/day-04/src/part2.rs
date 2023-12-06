@@ -35,15 +35,6 @@ impl Card {
         }
     }
 
-    pub fn get_points(&self) -> usize {
-        let mut winning_numbers = self.winning.iter().filter(|w| self.numbers.contains(w));
-        if let Some(_) = winning_numbers.next() {
-            winning_numbers.fold(1, |acc, _| acc * 2)
-        } else {
-            0
-        }
-    }
-
     pub fn number_of_winnings(&self) -> usize {
         self.winning
             .iter()
@@ -53,27 +44,22 @@ impl Card {
 }
 
 fn process_children(id: usize, cards: &[Card]) -> usize {
-    if let Some(card) = cards.get(id) {
-        println!("checking card {}", id + 1);
-        let number_of_winnings = card.number_of_winnings();
-        if number_of_winnings == 0 {
-            return 1;
-        }
-
-        let last_card = number_of_winnings + id;
-        ((id + 1)..=last_card)
-            .filter(|i| *i < cards.len())
-            .map(|i| process_children(i, cards))
-            .sum::<usize>()
-            + 1
-    } else {
-        0
+    let card = &cards[id];
+    let number_of_winnings = card.number_of_winnings();
+    if number_of_winnings == 0 {
+        return 1;
     }
+
+    let last_card = number_of_winnings + id;
+    ((id + 1)..=last_card)
+        .filter(|i| *i < cards.len())
+        .map(|i| process_children(i, cards))
+        .sum::<usize>()
+        + 1
 }
 
 pub fn process(input: &str) -> String {
     let cards: Vec<Card> = input.lines().map(|l| Card::from_str(l)).collect();
-    println!("Cards: {:?}", cards);
 
     cards
         .iter()
