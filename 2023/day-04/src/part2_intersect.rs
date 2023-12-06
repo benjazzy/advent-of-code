@@ -4,7 +4,7 @@ use std::collections::HashSet;
 struct Card {
     id: usize,
     numbers: HashSet<usize>,
-    winning: Vec<usize>,
+    winning: HashSet<usize>,
 }
 
 impl Card {
@@ -20,7 +20,7 @@ impl Card {
         let id = id.parse::<usize>().expect("Card id should be a number");
 
         let (winning, rest) = rest.split_once('|').expect("Card input should contain '|'");
-        let winning: Vec<usize> = winning
+        let winning: HashSet<usize> = winning
             .split(' ')
             .filter_map(|n| n.parse::<usize>().ok())
             .collect();
@@ -38,10 +38,7 @@ impl Card {
     }
 
     pub fn number_of_winnings(&self) -> usize {
-        self.winning
-            .iter()
-            .filter(|w| self.numbers.contains(w))
-            .count()
+        self.winning.intersection(&self.numbers).count()
     }
 }
 

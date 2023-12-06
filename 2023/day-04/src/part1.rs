@@ -42,25 +42,6 @@ impl Card {
             0
         }
     }
-
-    pub fn number_of_winnings(&self) -> usize {
-        self.winning
-            .iter()
-            .filter(|w| self.numbers.contains(w))
-            .count()
-    }
-}
-
-fn process_children(id: usize, cards: &[Card]) -> usize {
-    if let Some(card) = cards.get(id) {
-        let last_card = card.number_of_winnings() + id;
-        ((id + 1)..=last_card)
-            .filter(|i| *i < cards.len())
-            .map(|i| process_children(i, cards))
-            .sum()
-    } else {
-        1
-    }
 }
 
 pub fn process(input: &str) -> String {

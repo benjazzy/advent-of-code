@@ -1,4 +1,4 @@
-use std::collections::HashSet;
+use std::collections::{HashMap, HashSet};
 
 #[derive(Debug)]
 struct Card {
@@ -45,9 +45,19 @@ impl Card {
     }
 }
 
-fn process_children(id: usize, cards: &[Card]) -> usize {
+fn process_children(id: usize, cards: &[Card], cache: &mut HashMap<usize, usize>) -> usize {
     let card = &cards[id];
-    let number_of_winnings = card.number_of_winnings();
+    // let number_of_winnings = card.number_of_winnings();
+    let number_of_winnings = match cache.get(&id) {
+        Some(n) => *n,
+        None => {
+            let n = card.number_of_winnings();
+            cache.insert(id, n);
+
+            n
+        }
+    };
+
     if number_of_winnings == 0 {
         return 1;
     }
@@ -55,18 +65,19 @@ fn process_children(id: usize, cards: &[Card]) -> usize {
     let last_card = number_of_winnings + id;
     ((id + 1)..=last_card)
         .filter(|i| *i < cards.len())
-        .map(|i| process_children(i, cards))
+        .map(|i| process_children(i, cards, cache))
         .sum::<usize>()
         + 1
 }
 
 pub fn process(input: &str) -> String {
+    let mut cache = HashMap::new();
     let cards: Vec<Card> = input.lines().map(|l| Card::from_str(l)).collect();
 
     cards
         .iter()
         .enumerate()
-        .map(|(i, _)| process_children(i, cards.as_slice()))
+        .map(|(i, _)| process_children(i, cards.as_slice(), &mut cache))
         .sum::<usize>()
         .to_string()
 }

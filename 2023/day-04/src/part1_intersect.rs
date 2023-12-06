@@ -1,10 +1,9 @@
 use std::collections::HashSet;
 
-#[derive(Debug)]
 struct Card {
     id: usize,
     numbers: HashSet<usize>,
-    winning: Vec<usize>,
+    winning: HashSet<usize>,
 }
 
 impl Card {
@@ -20,7 +19,7 @@ impl Card {
         let id = id.parse::<usize>().expect("Card id should be a number");
 
         let (winning, rest) = rest.split_once('|').expect("Card input should contain '|'");
-        let winning: Vec<usize> = winning
+        let winning: HashSet<usize> = winning
             .split(' ')
             .filter_map(|n| n.parse::<usize>().ok())
             .collect();
@@ -37,36 +36,20 @@ impl Card {
         }
     }
 
-    pub fn number_of_winnings(&self) -> usize {
-        self.winning
-            .iter()
-            .filter(|w| self.numbers.contains(w))
-            .count()
+    pub fn get_points(&self) -> usize {
+        let mut winning_numbers = self.winning.intersection(&self.numbers);
+        if let Some(_) = winning_numbers.next() {
+            winning_numbers.fold(1, |acc, _| acc * 2)
+        } else {
+            0
+        }
     }
-}
-
-fn process_children(id: usize, cards: &[Card]) -> usize {
-    let card = &cards[id];
-    let number_of_winnings = card.number_of_winnings();
-    if number_of_winnings == 0 {
-        return 1;
-    }
-
-    let last_card = number_of_winnings + id;
-    ((id + 1)..=last_card)
-        .filter(|i| *i < cards.len())
-        .map(|i| process_children(i, cards))
-        .sum::<usize>()
-        + 1
 }
 
 pub fn process(input: &str) -> String {
-    let cards: Vec<Card> = input.lines().map(|l| Card::from_str(l)).collect();
-
-    cards
-        .iter()
-        .enumerate()
-        .map(|(i, _)| process_children(i, cards.as_slice()))
+    input
+        .lines()
+        .map(|l| Card::from_str(l).get_points())
         .sum::<usize>()
         .to_string()
 }
@@ -83,6 +66,6 @@ Card 3:  1 21 53 59 44 | 69 82 63 72 16 21 14  1
 Card 4: 41 92 73 84 69 | 59 84 76 51 58  5 54 83
 Card 5: 87 83 26 28 32 | 88 30 70 12 93 22 82 36
 Card 6: 31 18 13 56 72 | 74 77 10 23 35 67 36 11";
-        assert_eq!("30", process(input));
+        assert_eq!("13", process(input));
     }
 }

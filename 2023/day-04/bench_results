@@ -1,0 +1,40 @@
+Timer precision: 20 ns                                                                                                                                                                                        │
+day_04_bench  fastest       │ slowest       │ median        │ mean          │ samples │ iters                                                                                                                 │
+├─ part1      168.1 µs      │ 197.8 µs      │ 169.9 µs      │ 171.9 µs      │ 100     │ 100                                                                                                                   │
+╰─ part2      1.553 s       │ 1.597 s       │ 1.571 s       │ 1.571 s       │ 100     │ 100          
+
+###Numbers HashSet:
+Timer precision: 20 ns                                                                                                                                                                                        │
+day_04_bench  fastest       │ slowest       │ median        │ mean          │ samples │ iters                                                                                                                 │
+├─ part1      271.3 µs      │ 347.9 µs      │ 276.7 µs      │ 278.3 µs      │ 100     │ 100                                                                                                                   │
+╰─ part2      972.2 ms      │ 1.018 s       │ 988.7 ms      │ 989.8 ms      │ 100     │ 100 
+
+###Numbers Vec part 1 HashSet part 2
+Timer precision: 20 ns                                                                                                                                                                                        │
+day_04_bench  fastest       │ slowest       │ median        │ mean          │ samples │ iters                                                                                                                 │
+├─ part1      177.7 µs      │ 213.4 µs      │ 181.1 µs      │ 182.3 µs      │ 100     │ 100                                                                                                                   │
+╰─ part2      970.7 ms      │ 1.038 s       │ 985.9 ms      │ 988.4 ms      │ 100     │ 100    
+
+Timer precision: 20 ns                                                                                                                                                                                        │
+day_04_bench        fastest       │ slowest       │ median        │ mean          │ samples │ iters                                                                                                           │
+├─ part1            165.8 µs      │ 198.1 µs      │ 167.5 µs      │ 169 µs        │ 100     │ 100                                                                                                             │
+├─ part1_intersect  320.6 µs      │ 369.2 µs      │ 323.6 µs      │ 326 µs        │ 100     │ 100                                                                                                             │
+├─ part2            966.2 ms      │ 1.013 s       │ 981.1 ms      │ 983.3 ms      │ 100     │ 100                                                                                                             │
+╰─ part2_intersect  1.086 s       │ 1.131 s       │ 1.102 s       │ 1.102 s       │ 100     │ 100
+
+Timer precision: 20 ns                                                                                                                                                                                        │
+day_04_bench        fastest       │ slowest       │ median        │ mean          │ samples │ iters                                                                                                           │
+├─ part1            182.4 µs      │ 205.7 µs      │ 183.6 µs      │ 184.9 µs      │ 100     │ 100                                                                                                             │
+├─ part1_intersect  320.4 µs      │ 337.9 µs      │ 323.7 µs      │ 324.5 µs      │ 100     │ 100                                                                                                             │
+├─ part2            969.2 ms      │ 1.033 s       │ 982.5 ms      │ 984.1 ms      │ 100     │ 100                                                                                                             │
+├─ part2_cache      133.7 ms      │ 154.7 ms      │ 135.1 ms      │ 137.2 ms      │ 100     │ 100                                                                                                             │
+╰─ part2_intersect  1.096 s       │ 1.132 s       │ 1.108 s       │ 1.108 s       │ 100     │ 100 
+
+Timer precision: 20 ns                                                                                                                                                                                        │
+day_04_bench        fastest       │ slowest       │ median        │ mean          │ samples │ iters                                                                                                           │
+├─ part1            172.7 µs      │ 197.3 µs      │ 175.7 µs      │ 176.5 µs      │ 100     │ 100                                                                                                             │
+├─ part1_intersect  322 µs        │ 339.2 µs      │ 326.4 µs      │ 326.9 µs      │ 100     │ 100                                                                                                             │
+├─ part2            959.9 ms      │ 1.011 s       │ 984.3 ms      │ 986 ms        │ 100     │ 100                                                                                                             │
+├─ part2_cache      132.4 ms      │ 146.6 ms      │ 133.8 ms      │ 135 ms        │ 100     │ 100                                                                                                             │
+├─ part2_cache2     309.1 µs      │ 326.2 µs      │ 312.6 µs      │ 313.5 µs      │ 100     │ 100                                                                                                             │
+╰─ part2_intersect  1.079 s       │ 1.15 s        │ 1.109 s       │ 1.109 s       │ 100     │ 100    
