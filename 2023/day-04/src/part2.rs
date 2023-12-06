@@ -1,0 +1,100 @@
+#[derive(Debug)]
+struct Card {
+    id: usize,
+    numbers: Vec<usize>,
+    winning: Vec<usize>,
+}
+
+impl Card {
+    pub fn from_str(input: &str) -> Self {
+        let input = input
+            .strip_prefix("Card ")
+            .expect("Card input should start with 'Card '")
+            .trim_start();
+
+        let (id, rest) = input
+            .split_once(':')
+            .expect("Card input should contain ':'");
+        let id = id.parse::<usize>().expect("Card id should be a number");
+
+        let (winning, rest) = rest.split_once('|').expect("Card input should contain '|'");
+        let winning: Vec<usize> = winning
+            .split(' ')
+            .filter_map(|n| n.parse::<usize>().ok())
+            .collect();
+
+        let numbers: Vec<usize> = rest
+            .split(' ')
+            .filter_map(|n| n.parse::<usize>().ok())
+            .collect();
+
+        Card {
+            id,
+            numbers,
+            winning,
+        }
+    }
+
+    pub fn get_points(&self) -> usize {
+        let mut winning_numbers = self.winning.iter().filter(|w| self.numbers.contains(w));
+        if let Some(_) = winning_numbers.next() {
+            winning_numbers.fold(1, |acc, _| acc * 2)
+        } else {
+            0
+        }
+    }
+
+    pub fn number_of_winnings(&self) -> usize {
+        self.winning
+            .iter()
+            .filter(|w| self.numbers.contains(w))
+            .count()
+    }
+}
+
+fn process_children(id: usize, cards: &[Card]) -> usize {
+    if let Some(card) = cards.get(id) {
+        println!("checking card {}", id + 1);
+        let number_of_winnings = card.number_of_winnings();
+        if number_of_winnings == 0 {
+            return 1;
+        }
+
+        let last_card = number_of_winnings + id;
+        ((id + 1)..=last_card)
+            .filter(|i| *i < cards.len())
+            .map(|i| process_children(i, cards))
+            .sum::<usize>()
+            + 1
+    } else {
+        0
+    }
+}
+
+pub fn process(input: &str) -> String {
+    let cards: Vec<Card> = input.lines().map(|l| Card::from_str(l)).collect();
+    println!("Cards: {:?}", cards);
+
+    cards
+        .iter()
+        .enumerate()
+        .map(|(i, _)| process_children(i, cards.as_slice()))
+        .sum::<usize>()
+        .to_string()
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_process() {
+        let input = "Card 1: 41 48 83 86 17 | 83 86  6 31 17  9 48 53
+Card 2: 13 32 20 16 61 | 61 30 68 82 17 32 24 19
+Card 3:  1 21 53 59 44 | 69 82 63 72 16 21 14  1
+Card 4: 41 92 73 84 69 | 59 84 76 51 58  5 54 83
+Card 5: 87 83 26 28 32 | 88 30 70 12 93 22 82 36
+Card 6: 31 18 13 56 72 | 74 77 10 23 35 67 36 11";
+        assert_eq!("30", process(input));
+    }
+}
