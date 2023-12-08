@@ -47,7 +47,6 @@ impl TryFrom<&str> for LineType {
 //Time:      7  15   30
 fn parse_line(line: &str) -> IResult<&str, (LineType, Vec<u64>)> {
     let (rest, line_type) = context("line type", terminated(alphanumeric1, tag(":")))(line)?;
-    println!("Line type: {line_type}");
 
     let (rest, values) = context(
         "line values",
@@ -96,7 +95,6 @@ fn parse(input: &str) -> IResult<&str, Vec<Race>> {
 
 pub fn process(input: &str) -> String {
     let (_, races) = parse(input).expect("Input should be valid");
-    println!("Races: {:?}", races);
 
     races
         .iter()
