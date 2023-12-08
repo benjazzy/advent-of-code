@@ -1,4 +1,4 @@
-use std::collections::HashMap;
+use std::{collections::HashMap, ops::Range};
 
 use nom::{
     bytes::complete::take_until,
@@ -13,6 +13,50 @@ struct MapItem {
     dest_start: u32,
     source_start: u32,
     range_len: u32,
+}
+
+#[derive(Debug)]
+struct MapRange {
+    range: Range<u32>,
+    offset: i32,
+}
+
+impl MapRange {
+    pub fn new(map_item: &MapItem) -> Self {
+        let range = map_item.source_start..(map_item.source_start + map_item.range_len);
+        let offset = map_item.dest_start as i32 - map_item.source_start as i32;
+
+        MapRange { range, offset }
+    }
+
+    pub fn map(&self, item: &u32) -> Option<u32> {
+        if self.range.contains(item) {
+            return Some((self.offset + *item as i32) as u32);
+        }
+
+        None
+    }
+}
+
+#[derive(Debug)]
+struct Map {
+    maps: Vec<MapRange>,
+}
+
+impl Map {
+    pub fn new(map_items: Vec<MapItem>) -> Self {
+        let maps = map_items.iter().map(MapRange::new).collect();
+
+        Map { maps }
+    }
+
+    pub fn map(&self, item: u32) -> u32 {
+        self.maps
+            .iter()
+            .filter_map(|m| m.map(&item))
+            .next()
+            .map_or(item, |mapped| mapped)
+    }
 }
 
 fn line(input: &str) -> IResult<&str, MapItem> {
@@ -49,30 +93,8 @@ fn parse(input: &str) -> IResult<&str, (Vec<u32>, Vec<Vec<MapItem>>)> {
     Ok((input, (seeds, maps)))
 }
 
-fn load_maps(map_items: Vec<Vec<MapItem>>) -> Vec<HashMap<u32, u32>> {
-    let mut maps = Vec::new();
-
-    for map_set in map_items {
-        let mut combined_map = HashMap::new();
-        for map in map_set {
-            let map = process_map(map);
-            combined_map.extend(map);
-        }
-
-        maps.push(combined_map);
-    }
-
-    maps
-}
-
-fn process_map(map_item: MapItem) -> HashMap<u32, u32> {
-    let mut items = HashMap::new();
-
-    for i in 0..map_item.range_len {
-        items.insert(i + map_item.source_start, i + map_item.dest_start);
-    }
-
-    items
+fn load_maps(map_items: Vec<Vec<MapItem>>) -> Vec<Map> {
+    map_items.into_iter().map(Map::new).collect()
 }
 
 pub fn process(input: &str) -> String {
@@ -81,14 +103,14 @@ pub fn process(input: &str) -> String {
     println!("Maps len {}", maps.len());
 
     seeds
-        .iter()
+        .into_iter()
         .map(|seed| {
+            println!("\nSeed: {seed}");
             maps.iter().fold(seed, |acc, map| {
-                println!("Getting {acc} in {:?}", map);
-                match map.get(acc) {
-                    Some(dest) => dest,
-                    None => acc,
-                }
+                let value = map.map(acc);
+                println!("{acc} maps to {value}");
+
+                value
             })
         })
         .inspect(|l| println!("Location: {l}"))
@@ -137,5 +159,16 @@ humidity-to-location map:
 60 56 37
 56 93 4";
         assert_eq!("35", process(input));
+    }
+
+    #[test]
+    fn check_edges() {
+        let input = "seeds: 1 2 3
+
+seed-to-soil map:
+4 1 1
+1 2 1";
+
+        assert_eq!("1", process(input))
     }
 }
