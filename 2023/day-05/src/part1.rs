@@ -80,14 +80,15 @@ pub fn process(input: &str) -> String {
     let maps = load_maps(maps);
     println!("Maps len {}", maps.len());
 
-    println!("Test: {:?}", maps[1]);
-
     seeds
         .iter()
         .map(|seed| {
             maps.iter().fold(seed, |acc, map| {
-                println!("{acc}");
-                map.get(acc).expect("Map should contain seed")
+                println!("Getting {acc} in {:?}", map);
+                match map.get(acc) {
+                    Some(dest) => dest,
+                    None => acc,
+                }
             })
         })
         .inspect(|l| println!("Location: {l}"))
