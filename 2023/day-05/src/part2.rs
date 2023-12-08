@@ -103,18 +103,15 @@ pub fn process(input: &str) -> String {
         .map(|ends| ends[0]..(ends[0] + ends[1]))
         .collect();
 
+    let seed_ranges = seed_ranges.into_iter().flatten();
+
     let maps = load_maps(maps);
 
     seed_ranges
         .into_iter()
-        .map(|seed_range| {
-            seed_range
-                .map(|seed| maps.iter().fold(seed, |acc, map| map.map(acc)))
-                .min()
-                .expect("Seed should map to a location")
-        })
+        .map(|seed| maps.iter().fold(seed, |acc, map| map.map(acc)))
         .min()
-        .expect("Seed range should map to a location")
+        .expect("Seed should map to a location")
         .to_string()
 }
 

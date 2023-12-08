@@ -99,22 +99,17 @@ fn load_maps(map_items: Vec<Vec<MapItem>>) -> Vec<Map> {
 
 pub fn process(input: &str) -> String {
     let (test, (seeds, maps)) = parse(input).expect("Input should be valid");
-    println!("{test}");
     let maps = load_maps(maps);
-    println!("Maps len {}", maps.len());
 
     seeds
         .into_iter()
         .map(|seed| {
-            println!("\nSeed: {seed}");
             maps.iter().fold(seed, |acc, map| {
                 let value = map.map(acc);
-                println!("{acc} maps to {value}");
 
                 value
             })
         })
-        .inspect(|l| println!("Location: {l}"))
         .min()
         .expect("Seed should map to a location")
         .to_string()

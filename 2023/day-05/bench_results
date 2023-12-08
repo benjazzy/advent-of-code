@@ -1,0 +1,4 @@
+Timer precision: 20 ns                                                                                                                                                                                        │
+day_05_bench  fastest       │ slowest       │ median        │ mean          │ samples │ iters                                                                                                                 │
+├─ part1      16.13 µs      │ 27.61 µs      │ 16.27 µs      │ 16.82 µs      │ 100     │ 100                                                                                                                   │
+╰─ part2      3.573 m       │ 3.573 m       │ 3.573 m       │ 3.573 m       │ 1       │ 1

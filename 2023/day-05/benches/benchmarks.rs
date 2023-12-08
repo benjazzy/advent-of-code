@@ -7,14 +7,10 @@ fn main() {
 
 #[divan::bench]
 fn part1() {
-    part1::process(divan::black_box(include_str!(
-        "../input1.txt",
-    )));
+    part1::process(divan::black_box(include_str!("../input1.txt",)));
 }
 
-#[divan::bench]
+#[divan::bench(sample_count = 1)]
 fn part2() {
-    part2::process(divan::black_box(include_str!(
-        "../input2.txt",
-    )));
+    part2::process(divan::black_box(include_str!("../input2.txt",)));
 }
