@@ -10,28 +10,28 @@ use nom::{
 use nom_supreme::{tag::complete::tag, ParserExt};
 
 struct MapItem {
-    dest_start: u32,
-    source_start: u32,
-    range_len: u32,
+    dest_start: i64,
+    source_start: i64,
+    range_len: i64,
 }
 
 #[derive(Debug)]
 struct MapRange {
-    range: Range<u32>,
-    offset: i32,
+    range: Range<i64>,
+    offset: i64,
 }
 
 impl MapRange {
     pub fn new(map_item: &MapItem) -> Self {
         let range = map_item.source_start..(map_item.source_start + map_item.range_len);
-        let offset = map_item.dest_start as i32 - map_item.source_start as i32;
+        let offset = map_item.dest_start - map_item.source_start;
 
         MapRange { range, offset }
     }
 
-    pub fn map(&self, item: &u32) -> Option<u32> {
+    pub fn map(&self, item: &i64) -> Option<i64> {
         if self.range.contains(item) {
-            return Some((self.offset + *item as i32) as u32);
+            return Some((self.offset + *item));
         }
 
         None
@@ -50,7 +50,7 @@ impl Map {
         Map { maps }
     }
 
-    pub fn map(&self, item: u32) -> u32 {
+    pub fn map(&self, item: i64) -> i64 {
         self.maps
             .iter()
             .filter_map(|m| m.map(&item))
@@ -61,9 +61,9 @@ impl Map {
 
 fn line(input: &str) -> IResult<&str, MapItem> {
     let (input, (dest_start, source_start, range_len)) = tuple((
-        complete::u32,
-        complete::u32.preceded_by(tag(" ")),
-        complete::u32.preceded_by(tag(" ")),
+        complete::i64,
+        complete::i64.preceded_by(tag(" ")),
+        complete::i64.preceded_by(tag(" ")),
     ))(input)?;
 
     Ok((
@@ -83,9 +83,9 @@ fn parse_map(input: &str) -> IResult<&str, Vec<MapItem>> {
         .parse(input)
 }
 
-fn parse(input: &str) -> IResult<&str, (Vec<u32>, Vec<Vec<MapItem>>)> {
+fn parse(input: &str) -> IResult<&str, (Vec<i64>, Vec<Vec<MapItem>>)> {
     let (input, seeds) = tag("seeds: ")
-        .precedes(separated_list1(space1, complete::u32))
+        .precedes(separated_list1(space1, complete::i64))
         .parse(input)?;
 
     let (input, maps) = many1(parse_map)(input)?;
@@ -98,7 +98,8 @@ fn load_maps(map_items: Vec<Vec<MapItem>>) -> Vec<Map> {
 }
 
 pub fn process(input: &str) -> String {
-    let (_, (seeds, maps)) = parse(input).expect("Input should be valid");
+    let (test, (seeds, maps)) = parse(input).expect("Input should be valid");
+    println!("{test}");
     let maps = load_maps(maps);
     println!("Maps len {}", maps.len());
 
