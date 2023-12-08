@@ -14,3 +14,8 @@ fn part1() {
 fn part2() {
     part2::process(divan::black_box(include_str!("../input2.txt",)));
 }
+
+#[divan::bench]
+fn part2_rev() {
+    part2_rev::process(divan::black_box(include_str!("../input2.txt",)));
+}
