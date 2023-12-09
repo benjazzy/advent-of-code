@@ -55,7 +55,7 @@ struct CardSet<const N: usize> {
 impl<const N: usize> CardSet<N> {
     pub fn new(unsorted: [Card; N]) -> Self {
         let mut sorted = unsorted;
-        sorted.sort();
+        sorted.sort_unstable();
 
         CardSet { sorted, unsorted }
     }
@@ -191,7 +191,7 @@ pub fn process(input: &str) -> String {
     const HAND_SIZE: usize = 5;
 
     let (_, mut hands) = parse::<HAND_SIZE>(input).expect("Input should be valid");
-    hands.sort();
+    hands.sort_unstable();
 
     hands
         .iter()
