@@ -1,5 +1,3 @@
-from argparse import BooleanOptionalAction
-
 cafeteria = """..@@.@@@@.
 @@@.@.@.@@
 @@@@@.@.@@
@@ -36,8 +34,6 @@ def is_paper(paper):
         return False
 
 def find_next_roll(shelves):
-    # global accessible_rolls
-    mask = shelves.copy()
     for row in range(0, len(shelves)):
         for col in range(0, len(shelves[row])):
             paper = shelves[row][col]
